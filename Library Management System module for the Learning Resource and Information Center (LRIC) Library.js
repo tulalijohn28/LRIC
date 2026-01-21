@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <pglu charset="UTF-8">
+    <pglu name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provincial Capitol of La Union - Library Ordinances and Resolutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            margin: 20px; 
+            background: linear-gradient(to bottom, #003366, #ffffff); 
+            color: #333; 
+            min-height: 100vh;
+        }
+        h1, h2 { 
+            color: #000000; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
+        }
+        #header { 
+            text-align: center; 
+            background: #ffffff; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        #header .logos { 
+            display: flex; 
+            align-items: center; 
+        }
+        #header .logos img { 
+            height: 100px; 
+            margin: 0 10px; 
+        }
+        #header .center-content { 
+            flex: 1; 
+        }
+        #list, #form, #details { 
+            margin-bottom: 20px; 
+            background: rgba(255,255,255,0.9); 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        form label { 
+            display: block; 
+            margin-bottom: 10px; 
+            font-weight: bold; 
+            color: #333; 
+        }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 8px; 
+            margin-bottom: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            color: #333; 
+        }
+        button { 
+            margin: 5px; 
+            padding: 10px 15px; 
+            background: #003366; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+        button:hover { 
+            background: #005599; 
+        }
+        .record-item { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            margin-bottom: 10px; 
+            border-radius: 5px; 
+            background: #f9f9f9; 
+            color: #333; 
+        }
+        .record-item p { 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div class="logos">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9wXWSNgKerok0mMw7N91-sb6wBYkkUAI8QSdkACxEjdeOIONOnXgAOUJ7hqw&s&ec=121507538" alt="Provincial Government of La Union Logo">
+        </div>
+        <div class="center-content">
+            <h1>Provincial Capitol of La Union</h1>
+            <p>Library Ordinances and Resolutions Management System</p>
+        </div>
+        <div class="logos">
+            <img src="https://media.philstar.com/photos/2023/07/16/4_2023-07-16_22-24-49.jpg" alt="Bagong Pilipinas Logo">
+        </div>
+    </div>
+    
+    <div id="list">
+        
+    </div>
+    
+    <button id="addBtn">Add New Record</button>
+    
+    <div id="form" style="display: none;">
+        <h2 id="formTitle">Add New Record</h2>
+        <form id="recordForm">
+            <label>Title: <input type="text" id="title" required></label>
+            <label>Type: 
+                <select id="type" required>
+                    <option value="Ordinance">Ordinance</option>
+                    <option value="Resolution">Resolution</option>
+                </select>
+            </label>
+            <label>Description: <textarea id="description" required></textarea></label>
+            <label>Date: <input type="date" id="date" required></label>
+            <button type="submit">Save</button>
+            <button type="button" id="cancelBtn">Cancel</button>
+        </form>
+    </div>
+    
+    <div id="details" style="display: none;">
+        <h2 id="detailTitle"></h2>
+        <p><strong>Type:</strong> <span id="detailType"></span></p>
+        <p><strong>Description:</strong> <span id="detailDesc"></span></p>
+        <p><strong>Date:</strong> <span id="detailDate"></span></p>
+        <button id="editBtn">Edit</button>
+        <button id="deleteBtn">Delete</button>
+        <button id="backBtn">Back to List</button>
+    </div>
+    
+    <script>
+        // Data storage: Array of objects
+        let records = [
+            { id: 1, title: "Sample Ordinance", type: "Ordinance", description: "This is a sample ordinance for demonstration.", date: "2023-01-01" }
+        ];
+        let currentId = 2; 
+        let editingId = null; 
+        
+        // Function to render the list of records
+        function renderList() {
+            const listDiv = document.getElementById('list');
+            listDiv.innerHTML = '<h2>Records</h2>';
+            if (records.length === 0) {
+                listDiv.innerHTML += '<p>No records found.</p>';
+                return;
+            }
+            records.forEach(record => {
+                const item = document.createElement('div');
+                item.className = 'record-item';
+                item.innerHTML = `
+                    <p><strong>${record.title}</strong> (${record.type}) - ${record.date}</p>
+                    <button onclick="viewDetails(${record.id})">View Details</button>
+                `;
+                listDiv.appendChild(item);
+            });
+        }
+        
+        // Function to view details of a record
+        function viewDetails(id) {
+            const record = records.find(r => r.id === id);
+            if (!record) return;
+            editingId = id; 
+            document.getElementById('detailTitle').textContent = record.title;
+            document.getElementById('detailType').textContent = record.type;
+            document.getElementById('detailDesc').textContent = record.description;
+            document.getElementById('detailDate').textContent = record.date;
+            showSection('details');
+        }
+        
+        // Function to show the add/edit form
+        function showForm(id = null) {
+            editingId = id;
+            const formTitle = document.getElementById('formTitle');
+            if (id) {
+                formTitle.textContent = 'Edit Record';
+                const record = records.find(r => r.id === id);
+                document.getElementById('title').value = record.title;
+                document.getElementById('type').value = record.type;
+                document.getElementById('description').value = record.description;
+                document.getElementById('date').value = record.date;
+            } else {
+                formTitle.textContent = 'Add New Record';
+                document.getElementById('title').value = '';
+                document.getElementById('type').value = 'Ordinance';
+                document.getElementById('description').value = '';
+                document.getElementById('date').value = '';
+            }
+            showSection('form');
+        }
+        
+        // Function to save a record (add or update)
+        function saveRecord(event) {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const type = document.getElementById('type').value;
+            const description = document.getElementById('description').value;
+            const date = document.getElementById('date').value;
+            
+            if (editingId) {
+                // Update existing record
+                const record = records.find(r => r.id === editingId);
+                record.title = title;
+                record.type = type;
+                record.description = description;
+                record.date = date;
+            } else {
+                // Add new record
+                records.push({ id: currentId++, title, type, description, date });
+            }
+            renderList();
+            showSection('list');
+        }
+        
+        // Function to delete a record
+        function deleteRecord() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                records = records.filter(r => r.id !== editingId);
+                renderList();
+                showSection('list');
+            }
+        }
+        
+        // Function to show a specific section (list, form, or details)
+        function showSection(section) {
+            document.getElementById('list').style.display = section === 'list' ? 'block' : 'none';
+            document.getElementById('form').style.display = section === 'form' ? 'block' : 'none';
+            document.getElementById('details').style.display = section === 'details' ? 'block' : 'none';
+        }
+        
+        // Event listeners
+        document.getElementById('addBtn').addEventListener('click', () => showForm());
+        document.getElementById('recordForm').addEventListener('submit', saveRecord);
+        document.getElementById('cancelBtn').addEventListener('click', () => showSection('list'));
+        document.getElementById('editBtn').addEventListener('click', () => showForm(editingId));
+        document.getElementById('deleteBtn').addEventListener('click', deleteRecord);
+        document.getElementById('backBtn').addEventListener('click', () => showSection('list'));
+        
+        
+        renderList();
+    </script>
+</body>
+</html>
