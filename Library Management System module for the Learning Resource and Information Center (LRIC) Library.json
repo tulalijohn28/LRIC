@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Library Management System module for the Learning Resource and Information Center (LRIC) Library</title>
+</head>
+<body>
+  <h1>Library Management System module for the Learning Resource and Information Center (LRIC) Library</h1>
+  <pre id="output"></pre>
+
+  <script>
+    fetch('Library Management System module for the Learning Resource and Information Center (LRIC) Library.js')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('output').textContent =
+          JSON.stringify(data, null, 2);
+      });
+  </script>
+</body>
+</html>
